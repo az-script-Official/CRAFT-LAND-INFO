@@ -5,7 +5,262 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>info craft land free fire</title>
     <link rel="icon" type="image/jpeg" href="image/icon.jpg" sizes="500x500">
-    <link rel="stylesheet" href="style.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0a0a0f;
+            color: #e0e0e0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        img { max-width: 100%; }
+        input { user-select: text; -webkit-user-select: text; -moz-user-select: text; -ms-user-select: text; }
+
+        /* ═══ Splash Screen ═══ */
+        #splashScreen {
+            position: fixed; inset: 0; z-index: 9999;
+            background: #000;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            transition: opacity 0.5s ease;
+        }
+        #splashScreen.fade-out { opacity: 0; pointer-events: none; }
+        #splashScreen .splash-logo {
+            width: 120px; height: 120px; border-radius: 24px;
+            object-fit: cover; margin-bottom: 28px;
+            box-shadow: 0 0 40px rgba(249,115,22,0.4);
+            animation: splash-pulse 1.5s ease-in-out infinite;
+        }
+        @keyframes splash-pulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(249,115,22,0.3); transform: scale(1); }
+            50% { box-shadow: 0 0 50px rgba(249,115,22,0.6); transform: scale(1.03); }
+        }
+        #splashScreen .splash-text {
+            color: #f97316; font-size: 1.1rem; font-weight: 700;
+            margin-bottom: 24px; text-align: center;
+        }
+        #splashScreen .progress-bar-wrap {
+            width: 260px; height: 6px; background: rgba(255,255,255,0.08);
+            border-radius: 3px; overflow: hidden;
+        }
+        #splashScreen .progress-bar-fill {
+            height: 100%; width: 0%; border-radius: 3px;
+            background: linear-gradient(to left, #f97316, #dc2626);
+            transition: width 0.3s ease;
+        }
+        #splashScreen .progress-percent {
+            color: #666; font-size: 0.75rem; margin-top: 10px;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #1a1a2e; }
+        ::-webkit-scrollbar-thumb { background: #f97316; border-radius: 3px; }
+
+        /* Background */
+        .bg-decor { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+        .bg-decor div { position: absolute; border-radius: 50%; filter: blur(80px); }
+        .bg-decor .b1 { top: -100px; right: -100px; width: 300px; height: 300px; background: rgba(249,115,22,0.05); }
+        .bg-decor .b2 { top: 30%; left: -100px; width: 400px; height: 400px; background: rgba(239,68,68,0.04); }
+        .bg-decor .b3 { bottom: 0; right: 20%; width: 300px; height: 300px; background: rgba(251,191,36,0.04); }
+
+        /* Container */
+        .container { max-width: 900px; margin: 0 auto; padding: 0 16px; position: relative; z-index: 1; }
+
+        /* Header */
+        .header { border-bottom: 1px solid rgba(255,255,255,0.05); padding: 20px 0; }
+        .header-inner { display: flex; align-items: center; gap: 12px; }
+        .header-icon {
+            width: 48px; height: 48px; border-radius: 12px; overflow: hidden;
+            box-shadow: 0 0 20px rgba(249,115,22,0.3);
+        }
+        .header-icon img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .header h1 {
+            font-size: 1.6rem; font-weight: 800;
+            background: linear-gradient(to left, #fb923c, #fbbf24, #f97316);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: none;
+        }
+        .header p { font-size: 0.8rem; color: #888; margin-top: 2px; }
+
+        /* Search */
+        .search-box {
+            margin: 24px 0;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+            border-radius: 16px; padding: 16px; border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 0 20px rgba(249,115,22,0.15);
+        }
+        .search-row { display: flex; gap: 10px; }
+        .search-wrap { position: relative; flex: 1; }
+        .search-wrap svg { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: #666; }
+        .search-wrap input {
+            width: 100%; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08);
+            color: #fff; padding: 12px 40px 12px 14px; border-radius: 12px; outline: none;
+            font-size: 0.95rem; transition: all 0.3s; direction: ltr; text-align: right;
+        }
+        .search-wrap input:focus { border-color: rgba(249,115,22,0.4); box-shadow: 0 0 0 2px rgba(249,115,22,0.15); }
+        .search-wrap input::placeholder { color: #555; }
+        .btn-analyze {
+            display: flex; align-items: center; gap: 8px; justify-content: center;
+            background: linear-gradient(to left, #f97316, #dc2626);
+            color: white; border: none; padding: 12px 28px; border-radius: 12px;
+            font-weight: 700; font-size: 0.95rem; cursor: pointer;
+            transition: all 0.3s; animation: pulse-glow 2s ease-in-out infinite;
+            min-width: 140px;
+        }
+        .btn-analyze:hover { background: linear-gradient(to left, #fb923c, #ef4444); }
+        .btn-analyze:disabled { opacity: 0.5; cursor: not-allowed; animation: none; }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 5px rgba(249,115,22,0.3); }
+            50% { box-shadow: 0 0 20px rgba(249,115,22,0.6); }
+        }
+
+        /* Spinner */
+        .spinner { width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.6s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Error */
+        .error-box {
+            background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.25);
+            border-radius: 12px; padding: 14px; display: flex; align-items: flex-start; gap: 12px;
+            margin: 16px 0; color: #fca5a5;
+        }
+        .error-box svg { width: 20px; height: 20px; color: #ef4444; flex-shrink: 0; margin-top: 2px; }
+        .error-title { font-weight: 600; color: #f87171; }
+        .error-msg { font-size: 0.85rem; color: rgba(252,165,165,0.8); margin-top: 4px; }
+        .btn-retry { background: none; border: none; color: #f87171; cursor: pointer; padding: 4px; }
+        .btn-retry:hover { color: #fca5a5; }
+
+        /* Loading */
+        .loading { display: flex; flex-direction: column; align-items: center; padding: 60px 0; gap: 16px; }
+        .loading .big-spinner { width: 48px; height: 48px; border: 3px solid rgba(249,115,22,0.2); border-top-color: #f97316; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        .loading p { color: #666; font-size: 0.9rem; }
+
+        /* Card */
+        .card {
+            background: linear-gradient(to bottom, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+            border-radius: 16px; border: 1px solid rgba(255,255,255,0.08);
+            overflow: hidden; margin-bottom: 16px; transition: all 0.3s;
+        }
+        .card:hover { box-shadow: 0 0 25px rgba(249,115,22,0.15); }
+
+        /* Hero */
+        .hero-img { width: 100%; height: 220px; object-fit: cover; display: block; }
+        .hero-overlay { position: relative; }
+        .hero-gradient { position: absolute; bottom: 0; left: 0; right: 0; height: 120px; background: linear-gradient(to top, rgba(10,10,15,0.9), transparent); pointer-events: none; }
+        .hero-info { position: absolute; bottom: 0; right: 0; padding: 16px; }
+        .hero-info h2 { font-size: 1.5rem; font-weight: 800; color: white; margin-bottom: 4px; }
+        .hero-info p { color: #ccc; font-size: 0.85rem; }
+        .hero-badges { position: absolute; top: 12px; left: 12px; display: flex; gap: 6px; }
+        .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; color: white; }
+        .badge-orange { background: rgba(249,115,22,0.9); }
+        .badge-green { background: rgba(34,197,94,0.9); }
+
+        /* Actions */
+        .actions { padding: 12px 16px; display: flex; flex-wrap: wrap; gap: 8px; }
+        .btn-action {
+            display: flex; align-items: center; gap: 6px;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+            color: #ccc; font-size: 0.8rem; padding: 8px 14px; border-radius: 8px;
+            text-decoration: none; cursor: pointer; transition: all 0.2s;
+        }
+        .btn-action:hover { background: rgba(255,255,255,0.1); }
+        .btn-action svg { width: 14px; height: 14px; }
+        .btn-green { background: rgba(34,197,94,0.1); border-color: rgba(34,197,94,0.25); color: #86efac; }
+        .btn-green:hover { background: rgba(34,197,94,0.2); }
+
+        /* Stats Grid */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+        .stat-card {
+            padding: 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.3s;
+        }
+        .stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .stat-card .stat-icon { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+        .stat-card .stat-icon svg { width: 18px; height: 18px; }
+        .stat-card .stat-label { font-size: 0.75rem; color: #888; }
+        .stat-card .stat-value { font-size: 1.15rem; font-weight: 700; color: white; margin-top: 4px; }
+        .stat-red { background: linear-gradient(to bottom, rgba(239,68,68,0.15), rgba(239,68,68,0.03)); }
+        .stat-red svg { color: #f87171; }
+        .stat-blue { background: linear-gradient(to bottom, rgba(59,130,246,0.15), rgba(59,130,246,0.03)); }
+        .stat-blue svg { color: #60a5fa; }
+        .stat-amber { background: linear-gradient(to bottom, rgba(245,158,11,0.15), rgba(245,158,11,0.03)); }
+        .stat-amber svg { color: #fbbf24; }
+        .stat-purple { background: linear-gradient(to bottom, rgba(168,85,247,0.15), rgba(168,85,247,0.03)); }
+        .stat-purple svg { color: #c084fc; }
+
+        /* Section */
+        .section { padding: 20px; }
+        .section-header { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; cursor: pointer; }
+        .section-header svg { width: 20px; height: 20px; color: #f97316; flex-shrink: 0; }
+        .section-header h3 { font-size: 1.05rem; font-weight: 700; color: white; }
+        .section-header .chevron { width: 16px; height: 16px; color: #666; margin-right: auto; transition: transform 0.3s; }
+        .section-header .chevron.open { transform: rotate(180deg); }
+        .section-body { overflow: hidden; max-height: 0; transition: max-height 0.4s ease; }
+        .section-body.open { max-height: 2000px; }
+
+        /* Info Row */
+        .info-row { display: flex; align-items: flex-start; gap: 12px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .info-row:last-child { border-bottom: none; }
+        .info-label { font-size: 0.8rem; color: #666; min-width: 110px; flex-shrink: 0; padding-top: 2px; }
+        .info-value { font-size: 0.88rem; color: #ddd; word-break: break-all; }
+        .info-value.mono { font-family: monospace; font-size: 0.8rem; direction: ltr; text-align: right; }
+
+        /* Empty state */
+        .empty { text-align: center; padding: 60px 20px; }
+        .empty-icon {
+            width: 80px; height: 80px; border-radius: 16px; margin: 0 auto 20px;
+            overflow: hidden;
+            background: linear-gradient(135deg, rgba(249,115,22,0.15), rgba(220,38,38,0.08));
+            border: 1px solid rgba(249,115,22,0.15);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .empty-icon img { width: 100%; height: 100%; object-fit: cover; border-radius: 16px; }
+        .empty h3 { font-size: 1.2rem; color: #bbb; margin-bottom: 8px; }
+        .empty p { font-size: 0.85rem; color: #555; max-width: 400px; margin: 0 auto; }
+
+        /* Footer */
+        .footer { border-top: 1px solid rgba(255,255,255,0.05); padding: 24px 0; margin-top: 40px; text-align: center; }
+        .footer-text { font-size: 0.72rem; color: #444; margin-bottom: 16px; }
+        .social-links { display: flex; justify-content: center; gap: 14px; align-items: center; }
+        .social-links a {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 38px; height: 38px; border-radius: 10px;
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);
+            transition: all 0.25s; overflow: hidden;
+        }
+        .social-links a:hover { background: rgba(249,115,22,0.15); border-color: rgba(249,115,22,0.3); transform: translateY(-2px); }
+        .social-links a img { width: 22px; height: 22px; object-fit: contain; }
+
+        /* Download toast */
+        .dl-toast {
+            position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+            background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.3);
+            color: #86efac; padding: 12px 24px; border-radius: 12px;
+            font-size: 0.85rem; font-weight: 600; z-index: 8000;
+            transition: transform 0.3s ease, opacity 0.3s ease; opacity: 0;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .dl-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+        .dl-toast svg { width: 16px; height: 16px; }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .hero-img { height: 180px; }
+            .hero-info h2 { font-size: 1.2rem; }
+            .stats-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+            .header h1 { font-size: 1.3rem; }
+            .btn-analyze { padding: 12px 16px; min-width: unset; }
+            .info-row { flex-direction: column; gap: 4px; }
+            .info-label { min-width: unset; }
+            #splashScreen .splash-logo { width: 90px; height: 90px; }
+        }
+
+        /* Hidden */
+        .hidden { display: none !important; }
+    </style>
 </head>
 <body>
 
@@ -53,7 +308,7 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                     <input type="text" id="mapInput" placeholder="أدخل كود الخريطة (مثال: 9A75B1)">
                 </div>
-                <button class="btn-analyze" id="btnAnalyze" onclick="analyzeMap()()">
+                <button class="btn-analyze" id="btnAnalyze" onclick="analyzeMap()">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
                     <span id="btnText">تحليل البيانات</span>
                 </button>
@@ -67,7 +322,7 @@
                 <p class="error-title">فشل الاتصال</p>
                 <p class="error-msg" id="errorMsg"></p>
             </div>
-            <button class="btn-retry" onclick="analyzeMap()()" title="إعادة المحاولة">
+            <button class="btn-retry" onclick="analyzeMap()" title="إعادة المحاولة">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
             </button>
         </div>
@@ -154,6 +409,328 @@
     </footer>
 </div>
 
-<script src="app.js"></script>
+<script>
+// ═══ Splash Screen Logic ═══
+(function() {
+    var bar = document.getElementById('splashProgress');
+    var pct = document.getElementById('splashPercent');
+    var splash = document.getElementById('splashScreen');
+    var progress = 0;
+    var steps = [8, 18, 30, 42, 55, 65, 75, 85, 92, 97, 100];
+    var i = 0;
+
+    function tick() {
+        if (i >= steps.length) {
+            bar.style.width = '100%';
+            pct.textContent = '100%';
+            setTimeout(function() {
+                splash.classList.add('fade-out');
+                setTimeout(function() { splash.style.display = 'none'; }, 500);
+            }, 300);
+            return;
+        }
+        progress = steps[i];
+        bar.style.width = progress + '%';
+        pct.textContent = progress + '%';
+        i++;
+        var delay = 150 + Math.random() * 250;
+        setTimeout(tick, delay);
+    }
+
+    var logoImg = splash.querySelector('.splash-logo');
+    if (logoImg.complete) {
+        setTimeout(tick, 200);
+    } else {
+        logoImg.onload = function() { setTimeout(tick, 200); };
+        logoImg.onerror = function() { setTimeout(tick, 200); };
+    }
+})();
+
+// ═══ Main Application ═══
+var currentData = null;
+
+var proxyFunctions = [
+    function(u){ return 'https://corsproxy.io/?' + encodeURIComponent(u); },
+    function(u){ return 'https://api.allorigins.win/get?url=' + encodeURIComponent(u); },
+    function(u){ return 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(u); },
+];
+
+var deviceIds = [
+    '4e93e5106b39e1902e24d1ba2f17c709',
+    'a1b2c3d4e5f6789012345678abcdef01',
+    'f1e2d3c4b5a697808675645374839201',
+];
+
+function formatNumber(n){ return n.toLocaleString('en-US'); }
+function formatTime(s){
+    var m = Math.floor(s/60);
+    var sc = s%60;
+    if(m >= 60){ var h = Math.floor(m/60); var mi = m%60; return h + ' ساعة' + (mi > 0 ? ' و ' + mi + ' دقيقة' : ''); }
+    return m + ' دقيقة' + (sc > 0 ? ' و ' + sc + ' ثانية' : '');
+}
+function extractUid(url){ var m = url.match(/_(\d{8,12})_/); return m ? m[1] : 'غير معروف'; }
+function getTeamLabel(c){
+    return {1:'فردي',2:'ثنائي (2V2)',3:'ثلاثي (3V3)',4:'سكواد (4V4)',5:'ضد 5',6:'ضد 6'}[c] || c + ' فرق';
+}
+function getModeName(tid, gid, config){
+    var tk = config.mode_template_id_key_map[String(tid)];
+    if(tk) return config.translations[tk] || tk;
+    if(gid !== undefined){ var gk = config.game_mode_id_key_map[String(gid)]; if(gk) return config.translations[gk] || gk; }
+    return 'وضع مخصص';
+}
+
+// Toggle Section
+function toggleSection(id){
+    var body = document.getElementById('body-' + id);
+    var chev = document.getElementById('chev-' + id);
+    if(body.classList.contains('open')){
+        body.classList.remove('open');
+        if(chev) chev.classList.remove('open');
+    } else {
+        body.classList.add('open');
+        if(chev) chev.classList.add('open');
+    }
+}
+
+// Show Toast
+function showToast(msg){
+    var toast = document.getElementById('dlToast');
+    document.getElementById('dlToastText').textContent = msg;
+    toast.classList.add('show');
+    setTimeout(function(){ toast.classList.remove('show'); }, 2500);
+}
+
+// Single fetch attempt
+async function fetchMapData(proxyFn, devId, mapCode, abortSignal){
+    var garenaUrl = 'https://mapshare.freefiremobile.com/api/info?lang=ar&region=ME&map_code=%23' + mapCode + '&device_id=' + devId;
+    var proxyUrl = proxyFn(garenaUrl);
+    var resp = await fetch(proxyUrl, { signal: abortSignal });
+    if(!resp.ok) throw new Error('HTTP ' + resp.status);
+    var data;
+    if(proxyUrl.indexOf('allorigins') !== -1){
+        var json = await resp.json();
+        data = JSON.parse(json.contents);
+    } else {
+        data = await resp.json();
+    }
+    if(data.code === 0 && data.data){
+        return { success: true, data: data.data };
+    } else {
+        return { success: false, msg: data.msg || 'الكود غير صحيح أو الخريطة غير موجودة' };
+    }
+}
+
+// Main Analyze function
+async function analyzeMap(){
+    var input = document.getElementById('mapInput').value.trim();
+    if(!input){ showError('يرجى إدخال كود الخريطة'); return; }
+    if(input.startsWith('#')) input = input.substring(1);
+
+    var btn = document.getElementById('btnAnalyze');
+    var btnText = document.getElementById('btnText');
+    btn.disabled = true;
+    btnText.innerHTML = '<div class="spinner"></div>';
+    document.getElementById('errorBox').classList.add('hidden');
+    document.getElementById('results').classList.add('hidden');
+    document.getElementById('emptyState').classList.add('hidden');
+    document.getElementById('loadingBox').classList.remove('hidden');
+
+    var attempts = [];
+    for(var pi = 0; pi < proxyFunctions.length; pi++){
+        for(var di = 0; di < deviceIds.length; di++){
+            var ctrl = new AbortController();
+            var timer = setTimeout(function(c){ return function(){ c.abort(); }; }(ctrl), 8000);
+            attempts.push({
+                promise: fetchMapData(proxyFunctions[pi], deviceIds[di], input, ctrl.signal),
+                ctrl: ctrl, timer: timer
+            });
+        }
+    }
+
+    var done = false;
+    var errorMsg = '';
+
+    var allPromises = attempts.map(function(att, idx){
+        return (async function(a, i){
+            try {
+                var result = await a.promise;
+                clearTimeout(a.timer);
+                if(done) return null;
+                done = true;
+                attempts.forEach(function(b, j){ if(j !== i){ b.ctrl.abort(); clearTimeout(b.timer); } });
+                return result;
+            } catch(e){
+                clearTimeout(a.timer);
+                return null;
+            }
+        })(att, idx);
+    });
+
+    var foundResult = null;
+    var results = await Promise.allSettled(allPromises);
+
+    for(var ri = 0; ri < results.length; ri++){
+        if(results[ri].status === 'fulfilled' && results[ri].value && results[ri].value.success){
+            foundResult = results[ri].value;
+            break;
+        }
+        if(results[ri].status === 'fulfilled' && results[ri].value && !results[ri].value.success){
+            errorMsg = results[ri].value.msg;
+        }
+    }
+
+    document.getElementById('loadingBox').classList.add('hidden');
+    btn.disabled = false;
+    btnText.textContent = 'تحليل البيانات';
+
+    if(foundResult){
+        currentData = foundResult.data;
+        renderData(foundResult.data);
+    } else if(errorMsg){
+        showError(errorMsg);
+    } else {
+        showError('فشل الاتصال بالسيرفر بعد عدة محاولات. تأكد من اتصالك بالإنترنت وحاول مرة أخرى.');
+    }
+}
+
+// Show Error
+function showError(msg){
+    document.getElementById('errorMsg').textContent = msg;
+    document.getElementById('errorBox').classList.remove('hidden');
+    document.getElementById('results').classList.add('hidden');
+}
+
+// Download Image
+function downloadImage(){
+    if(!currentData) return;
+    var imgUrl = currentData.workshop_code_info.map_cover_url;
+    if(!imgUrl) return;
+    var fileName = (currentData.workshop_code_info.workshop_name || 'map') + '.jpg';
+
+    showToast('جاري تحميل الصورة...');
+
+    var proxyUrls = proxyFunctions.map(function(fn){ return fn(imgUrl); });
+    var aborted = false;
+
+    var tryProxy = function(pUrl){
+        return new Promise(function(resolve, reject){
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', pUrl, true);
+            xhr.responseType = 'blob';
+            xhr.timeout = 15000;
+            xhr.onload = function(){
+                if(xhr.status === 200 && xhr.response && xhr.response.size > 0){
+                    resolve(xhr.response);
+                } else {
+                    reject(new Error('bad response'));
+                }
+            };
+            xhr.onerror = function(){ reject(new Error('xhr error')); };
+            xhr.ontimeout = function(){ reject(new Error('timeout')); };
+            xhr.send();
+        });
+    };
+
+    Promise.any(proxyUrls.map(function(u){ return tryProxy(u); }))
+    .then(function(blob){
+        if(aborted) return;
+        aborted = true;
+        var url = window.URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+        showToast('تم تحميل الصورة بنجاح');
+    })
+    .catch(function(){
+        if(aborted) return;
+        try {
+            var a = document.createElement('a');
+            a.href = imgUrl;
+            a.download = fileName;
+            a.target = '_blank';
+            a.rel = 'noopener';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            showToast('تم فتح الصورة - احفظها يدوياً');
+        } catch(e){
+            showToast('حدث خطأ في تحميل الصورة');
+        }
+    });
+}
+
+// Render Data
+function renderData(data){
+    var info = data.workshop_code_info;
+    var config = data.game_config;
+
+    document.getElementById('results').classList.remove('hidden');
+    document.getElementById('emptyState').classList.add('hidden');
+    document.getElementById('errorBox').classList.add('hidden');
+
+    // Hero
+    document.getElementById('heroImg').src = info.map_cover_url;
+    document.getElementById('heroTitle').textContent = info.workshop_name;
+    document.getElementById('heroAuthor').textContent = 'بواسطة: ' + info.author_name;
+    document.getElementById('badgeCode').textContent = '#' + info.short_workshop_code;
+    if(info.state === 1) document.getElementById('badgeActive').classList.remove('hidden');
+    else document.getElementById('badgeActive').classList.add('hidden');
+
+    // Actions
+    document.getElementById('actionsBar').innerHTML = '<button class="btn-action btn-green" onclick="downloadImage()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span>تحميل الصورة</span></button>';
+
+    // Stats
+    document.getElementById('statsGrid').innerHTML =
+        '<div class="stat-card stat-red"><div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg><span class="stat-label">إعجاب</span></div><div class="stat-value">' + formatNumber(info.like_count) + '</div></div>' +
+        '<div class="stat-card stat-blue"><div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg><span class="stat-label">مشترك</span></div><div class="stat-value">' + formatNumber(info.subscribe_count) + '</div></div>' +
+        '<div class="stat-card stat-amber"><div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span class="stat-label">مدة اللعب</span></div><div class="stat-value">' + formatTime(info.min_est_play_time) + '</div></div>' +
+        '<div class="stat-card stat-purple"><div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg><span class="stat-label">UID المصمم</span></div><div class="stat-value" style="font-size:0.9rem;direction:ltr;text-align:right">' + extractUid(info.map_cover_url) + '</div></div>';
+
+    // Details
+    var rows = [
+        ['اسم الخريطة', info.workshop_name],
+        ['اسم المصمم', info.author_name],
+        ['كود الخريطة المختصر', '#' + info.short_workshop_code, true],
+        ['كود الخريطة الكامل', info.workshop_code, true],
+        ['الوصف', info.workshop_desc || 'لا يوجد وصف'],
+        ['عدد الجولات', String(info.round_count)],
+        ['رقم الخريطة', String(info.map_id)],
+        ['حالة الخريطة', info.state === 1 ? 'نشطة' : 'غير نشطة'],
+    ];
+    if(info.sub_desc) rows.push(['وصف إضافي', info.sub_desc]);
+    document.getElementById('detailsContent').innerHTML = rows.map(function(r){
+        return '<div class="info-row"><span class="info-label">' + r[0] + '</span><span class="info-value' + (r[2] ? ' mono' : '') + '">' + r[1] + '</span></div>';
+    }).join('');
+
+    // Game Details
+    var modeName = getModeName(info.mode_template_id, info.game_mode, config);
+    var gameRows = [
+        ['نوع الفريق', getTeamLabel(info.team_count)],
+        ['وضع اللعبة', modeName],
+        ['رقم القالب', String(info.mode_template_id)],
+        ['معرف وضع اللعبة', String(info.game_mode)],
+        ['نوع المجموعة', info.group_mode === 1 ? 'جماعي' : 'فردي'],
+        ['المنطقة', data.region + ' (' + data.region_lang + ')'],
+        ['اللغة', data.lang === 'ar' ? 'العربية' : data.lang],
+        ['وقت اللعب', formatTime(info.min_est_play_time)],
+    ];
+    document.getElementById('gameContent').innerHTML = gameRows.map(function(r){
+        return '<div class="info-row"><span class="info-label">' + r[0] + '</span><span class="info-value">' + r[1] + '</span></div>';
+    }).join('');
+
+    // Open first sections
+    toggleSection('details');
+    toggleSection('game');
+}
+
+// Enter key
+document.getElementById('mapInput').addEventListener('keydown', function(e){
+    if(e.key === 'Enter') analyzeMap();
+});
+</script>
 </body>
 </html>
