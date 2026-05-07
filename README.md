@@ -1,4 +1,4 @@
-```markdown
+markdown
 <div align="center">
   <img src="image/icon.jpg" alt="CRAFT-LAND-INFO Logo" width="150" height="150" style="border-radius: 24px;">
 
@@ -215,4 +215,3 @@ Alternatively, you can host it on **Netlify** or **Vercel** by simply connecting
 <p align="center">
   <strong>صنع بكل ❤️ بواسطة AZ Script</strong>
 </p>
-```
