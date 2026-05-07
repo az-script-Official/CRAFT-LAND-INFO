@@ -115,7 +115,7 @@ Alternatively, you can host it on **Netlify** or **Vercel** by simply connecting
 </p>
 
 <p align="center">
-  <strong>Made with ❤️ by AZ Script</strong>
+  <strong>Made by AZ SCRIPT</strong>
 </p>
 
 ---
@@ -213,5 +213,5 @@ Alternatively, you can host it on **Netlify** or **Vercel** by simply connecting
 </p>
 
 <p align="center">
-  <strong>صنع بكل ❤️ بواسطة AZ Script</strong>
+  <strong> صنع بواسطه AZ SCRIPT</strong>
 </p>
