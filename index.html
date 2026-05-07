@@ -3,10 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تحليل خرائط Free Fire - Craft Land</title>
+    <title>info craft land free fire</title>
+    <link rel="icon" type="image/jpeg" href="https://i.ibb.co/trCd87Q/1000031475.jpg" sizes="500x500">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+<div id="splashScreen">
+    <img class="splash-logo" src="https://i.ibb.co/trCd87Q/1000031475.jpg" alt="Logo">
+    <p class="splash-text">جاري تحميل موارد الموقع</p>
+    <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="splashProgress"></div>
+    </div>
+    <p class="progress-percent" id="splashPercent">0%</p>
+</div>
+
+<div class="dl-toast" id="dlToast">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+    <span id="dlToastText">تم التحميل بنجاح</span>
+</div>
 
 <div class="bg-decor">
     <div class="b1"></div>
@@ -31,56 +46,92 @@
         <div class="search-box">
             <div class="search-row">
                 <div class="search-wrap">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                     <input type="text" id="mapInput" placeholder="أدخل كود الخريطة (مثال: 9A75B1)">
                 </div>
-                <button class="btn-analyze" id="btnAnalyze">
+                <button class="btn-analyze" id="btnAnalyze" onclick="startAnalysis()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
                     <span id="btnText">تحليل البيانات</span>
                 </button>
             </div>
         </div>
 
         <div class="error-box hidden" id="errorBox">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
             <div style="flex:1">
                 <p class="error-title">فشل الاتصال</p>
                 <p class="error-msg" id="errorMsg"></p>
             </div>
+            <button class="btn-retry" onclick="startAnalysis()" title="إعادة المحاولة">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+            </button>
         </div>
 
         <div class="loading hidden" id="loadingBox">
             <div class="big-spinner"></div>
-            <p>جاري جلب بيانات الخريطه...</p>
+            <p>جاري جلب بيانات الخريطه مرجو انتضار قليلا</p>
         </div>
 
         <div id="results" class="hidden">
             <div class="card" id="heroCard">
                 <div class="hero-overlay">
                     <img class="hero-img" id="heroImg" src="" alt="Map Cover">
+                    <div class="hero-gradient"></div>
+                    <div class="hero-badges">
+                        <span class="badge badge-orange" id="badgeCode"></span>
+                        <span class="badge badge-green hidden" id="badgeActive">نشطة</span>
+                    </div>
                     <div class="hero-info">
                         <h2 id="heroTitle"></h2>
                         <p id="heroAuthor"></p>
-                        <span class="badge badge-orange" id="badgeCode"></span>
                     </div>
                 </div>
-                <div class="actions" id="actionsBar">
-                    <button class="btn-action btn-green" id="downloadImgBtn">تحميل الصورة</button>
-                </div>
+                <div class="actions" id="actionsBar"></div>
             </div>
 
             <div class="stats-grid" id="statsGrid"></div>
 
             <div class="card">
-                <div class="section-header"><h3>معلومات الخريطة</h3></div>
-                <div class="section" id="detailsContent"></div>
+                <div class="section-header" onclick="toggleSection('details')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                    <h3>معلومات الخريطة</h3>
+                    <svg class="chevron" id="chev-details" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
+                <div class="section-body" id="body-details">
+                    <div class="section" id="detailsContent"></div>
+                </div>
             </div>
 
             <div class="card">
-                <div class="section-header"><h3>تفاصيل اللعب</h3></div>
-                <div class="section" id="gameContent"></div>
+                <div class="section-header" onclick="toggleSection('game')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                    <h3>تفاصيل اللعب</h3>
+                    <svg class="chevron" id="chev-game" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
+                <div class="section-body" id="body-game">
+                    <div class="section" id="gameContent"></div>
+                </div>
             </div>
         </div>
-    </main>
-</div>
 
+        <div class="empty" id="emptyState">
+            <div class="empty-icon">
+                <img src="https://i.ibb.co/trCd87Q/1000031475.jpg" alt="Logo">
+            </div>
+            <h3>ابدأ بتحليل خريطة</h3>
+            <p>أدخل كود الخريطة المكون من 6 أحرف لعرض جميع المعلومات التفصيلية حول الخريطة والمصمم وأوضاع اللعب</p>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p class="footer-text">استخراج معلومات خرائط ارض الحرف</p>
+        <div class="social-links">
+            <a href="https://youtube.com/@azcraftland" target="_blank"><img src="https://i.ibb.co/8nwNFfSq/youtube.png"></a>
+            <a href="https://github.com/az-script-Official" target="_blank"><img src="https://i.ibb.co/LfnWXS8/github.png"></a>
+            <a href="https://t.me/AZSCRIPTX" target="_blank"><img src="https://i.ibb.co/V0WpSHr6/telegram.png"></a>
+        </div>
+    </footer>
+</div>
 <script src="script.js"></script>
 </body>
 </html>
