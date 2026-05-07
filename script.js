@@ -1,75 +1,120 @@
-// الإعدادات والروابط الأساسية
+// 1. Splash Screen Logic
+(function() {
+    const bar = document.getElementById('splashProgress');
+    const pct = document.getElementById('splashPercent');
+    const splash = document.getElementById('splashScreen');
+    let progress = 0;
+    const steps = [10, 30, 60, 90, 100];
+    let i = 0;
+
+    function tick() {
+        if (i >= steps.length) {
+            setTimeout(() => {
+                splash.classList.add('fade-out');
+                setTimeout(() => splash.style.display = 'none', 500);
+            }, 300);
+            return;
+        }
+        progress = steps[i++];
+        bar.style.width = progress + '%';
+        pct.textContent = progress + '%';
+        setTimeout(tick, 200 + Math.random() * 300);
+    }
+    tick();
+})();
+
+// 2. Core App Logic
+let currentData = null;
+
 const proxies = [
-    url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
-    url => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`
+    u => 'https://corsproxy.io/?' + encodeURIComponent(u),
+    u => 'https://api.allorigins.win/get?url=' + encodeURIComponent(u)
 ];
 
-const mapInput = document.getElementById('mapInput');
-const btnAnalyze = document.getElementById('btnAnalyze');
-const resultsDiv = document.getElementById('results');
-const loadingBox = document.getElementById('loadingBox');
-const errorBox = document.getElementById('errorBox');
+const devIds = ['4e93e5106b39e1902e24d1ba2f17c709'];
 
-// وظيفة جلب البيانات
-async function fetchMapData(mapCode) {
-    const devId = '4e93e5106b39e1902e24d1ba2f17c709';
-    const garenaUrl = `https://mapshare.freefiremobile.com/api/info?lang=ar&region=ME&map_code=%23${mapCode}&device_id=${devId}`;
+async function startAnalysis() {
+    let input = document.getElementById('mapInput').value.trim();
+    if (!input) return alert('يرجى إدخال الكود');
+    if (input.startsWith('#')) input = input.substring(1);
+
+    const btn = document.getElementById('btnAnalyze');
+    const btnText = document.getElementById('btnText');
     
-    // محاولة استخدام أول بروكسي متاح
+    // UI Reset
+    btn.disabled = true;
+    btnText.innerHTML = '<div class="spinner"></div>';
+    document.getElementById('errorBox').classList.add('hidden');
+    document.getElementById('results').classList.add('hidden');
+    document.getElementById('emptyState').classList.add('hidden');
+    document.getElementById('loadingBox').classList.remove('hidden');
+
     try {
-        const response = await fetch(proxies[0](garenaUrl));
-        const json = await response.json();
-        return json.data;
+        const mapData = await fetchMapInfo(input);
+        renderData(mapData);
     } catch (err) {
-        throw new Error("فشل في جلب البيانات من السيرفر");
+        showError(err.message);
+    } finally {
+        btn.disabled = false;
+        btnText.textContent = 'تحليل البيانات';
+        document.getElementById('loadingBox').classList.add('hidden');
     }
 }
 
-// عرض البيانات في الواجهة
-function renderResults(data) {
+async function fetchMapInfo(code) {
+    const url = `https://mapshare.freefiremobile.com/api/info?lang=ar&region=ME&map_code=%23${code}&device_id=${devIds[0]}`;
+    
+    for (let proxy of proxies) {
+        try {
+            const resp = await fetch(proxy(url));
+            let json = await resp.json();
+            if (json.contents) json = JSON.parse(json.contents); // For AllOrigins
+            
+            if (json.code === 0) return json.data;
+            throw new Error(json.msg || 'الكود غير صحيح');
+        } catch (e) { continue; }
+    }
+    throw new Error('فشل الاتصال بالخادم');
+}
+
+function renderData(data) {
+    currentData = data;
     const info = data.workshop_code_info;
     
+    document.getElementById('results').classList.remove('hidden');
     document.getElementById('heroImg').src = info.map_cover_url;
     document.getElementById('heroTitle').textContent = info.workshop_name;
-    document.getElementById('heroAuthor').textContent = `المصمم: ${info.author_name}`;
-    document.getElementById('badgeCode').textContent = `#${info.short_workshop_code}`;
+    document.getElementById('heroAuthor').textContent = 'بواسطة: ' + info.author_name;
+    document.getElementById('badgeCode').textContent = '#' + info.short_workshop_code;
 
-    // تعبئة الإحصائيات
+    // Stats Grid
     document.getElementById('statsGrid').innerHTML = `
-        <div class="stat-card"><div>إعجاب</div><strong>${info.like_count}</strong></div>
-        <div class="stat-card"><div>مشترك</div><strong>${info.subscribe_count}</strong></div>
-        <div class="stat-card"><div>الجولات</div><strong>${info.round_count}</strong></div>
+        <div class="stat-card">إعجاب: ${info.like_count}</div>
+        <div class="stat-card">مشترك: ${info.subscribe_count}</div>
+        <div class="stat-card">مدة اللعب: ${Math.floor(info.min_est_play_time/60)} دقيقة</div>
+        <div class="stat-card">ID المصمم: ${info.map_cover_url.match(/_(\d+)_/)?.[1] || 'N/A'}</div>
     `;
 
-    // تعبئة التفاصيل
+    // Details Content
     document.getElementById('detailsContent').innerHTML = `
-        <div class="info-row"><span>كود الخريطة:</span><span>${info.workshop_code}</span></div>
-        <div class="info-row"><span>الوصف:</span><span>${info.workshop_desc || 'لا يوجد'}</span></div>
+        <div class="info-row"><span>الاسم</span><span>${info.workshop_name}</span></div>
+        <div class="info-row"><span>الكود الكامل</span><span>${info.workshop_code}</span></div>
+        <div class="info-row"><span>عدد الجولات</span><span>${info.round_count}</span></div>
     `;
 
-    resultsDiv.classList.remove('hidden');
+    document.getElementById('body-details').classList.add('open');
 }
 
-// زر التحليل
-btnAnalyze.addEventListener('click', async () => {
-    const code = mapInput.value.trim().replace('#', '');
-    if (!code) return alert("أدخل الكود أولاً");
+function toggleSection(id) {
+    const body = document.getElementById('body-' + id);
+    body.classList.toggle('open');
+}
 
-    loadingBox.classList.remove('hidden');
-    resultsDiv.classList.add('hidden');
-    errorBox.classList.add('hidden');
+function showError(msg) {
+    document.getElementById('errorMsg').textContent = msg;
+    document.getElementById('errorBox').classList.remove('hidden');
+}
 
-    try {
-        const data = await fetchMapData(code);
-        if (data) {
-            renderResults({ workshop_code_info: data.workshop_code_info });
-        } else {
-            throw new Error("الكود غير صحيح");
-        }
-    } catch (err) {
-        errorBox.classList.remove('hidden');
-        document.getElementById('errorMsg').textContent = err.message;
-    } finally {
-        loadingBox.classList.add('hidden');
-    }
+document.getElementById('mapInput').addEventListener('keypress', e => {
+    if (e.key === 'Enter') startAnalysis();
 });
